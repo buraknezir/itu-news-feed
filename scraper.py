@@ -3,16 +3,14 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import json
 import time
-from datetime import datetime
+import re
 
 DEPARTMENTS = [
-    "https://yurtburs.itu.edu.tr/haberler",
-    "https://ydy.itu.edu.tr/haberler",
-    "https://kim.itu.edu.tr/haberler",
-    # Add more department URLs here
+    {"name": "Burslar ve Yurtlar Koordinatörlüğü", "url": "https://yurtburs.itu.edu.tr/haberler"},
+    {"name": "Yabancı Diller Yüksekokulu", "url": "https://ydy.itu.edu.tr/haberler"},
+    {"name": "Kart İşlem Merkezi", "url": "https://kim.itu.edu.tr/haberler"},
 ]
 
-# Set the cutoff date (inclusive)
 MIN_DATE_STR = "2026-08-01"
 
 TR_MONTHS = {
@@ -21,17 +19,157 @@ TR_MONTHS = {
     "Eyl": "09", "Eki": "10", "Kas": "11", "Ara": "12"
 }
 
-def parse_date(date_str):
-    clean = date_str.replace(" (?)", "").strip()
-    parts = clean.split()
-    if len(parts) == 3:
-        day, month_abbr, year = parts
-        month = TR_MONTHS.get(month_abbr, "01")
-        return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
-    return "1970-01-01"
+DATE_PATTERNS = [
+    re.compile(r'(\d{1,2})\s+(Oca|Şub|Mar|Nis|May|Haz|Tem|Ağu|Eyl|Eki|Kas|Ara)\s+(\d{4})'),
+    re.compile(r'(\d{1,2})\.(\d{2})\.(\d{4})'),
+    re.compile(r'(\d{4})-(\d{2})-(\d{2})'),
+]
 
-def fetch_news(url):
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+def parse_date(date_str):
+    if not date_str:
+        return None
+    for pattern in DATE_PATTERNS:
+        match = pattern.search(date_str)
+        if match:
+            groups = match.groups()
+            if len(groups) == 3:
+                if groups[1] in TR_MONTHS:
+                    day, month_abbr, year = groups
+                    month = TR_MONTHS[month_abbr]
+                    return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+                elif len(groups[0]) == 4:
+                    year, month, day = groups
+                    return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+                else:
+                    day, month, year = groups
+                    return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+    return None
+
+def extract_news_items(soup, base_domain):
+    news_items = []
+
+    item_selectors = [
+        'div.news-list__item',
+        'div.row.type2',
+        'article',
+        'div.news-item',
+        'div.haber-item',
+        'div.card',
+    ]
+
+    items_found = []
+    for sel in item_selectors:
+        found = soup.select(sel)
+        if found:
+            items_found.extend(found)
+            break
+
+    if not items_found:
+        for elem in soup.find_all(['div', 'article', 'li']):
+            link = elem.find('a', href=True)
+            if link and re.search(r'\d{1,2}\s+(Oca|Şub|Mar|Nis|May|Haz|Tem|Ağu|Eyl|Eki|Kas|Ara)', elem.get_text()):
+                items_found.append(elem)
+
+    seen = set()
+    unique_items = []
+    for item in items_found:
+        item_id = id(item)
+        if item_id not in seen:
+            seen.add(item_id)
+            unique_items.append(item)
+
+    for item in unique_items:
+        # --- Extract title and link ---
+        title = None
+        link = None
+
+        for tag in ['h2', 'h3', 'h4', 'h5', 'h6']:
+            heading = item.select_one(tag)
+            if heading:
+                link_tag = heading.find('a', href=True) or item.find('a', href=True)
+                if link_tag:
+                    title = heading.get_text(strip=True)
+                    link = link_tag.get('href')
+                    break
+
+        if not title or not link:
+            for a in item.find_all('a', href=True):
+                text = a.get_text(strip=True)
+                if text and len(text) > 5:
+                    href = a.get('href', '')
+                    if '/haber' in href or '/news' in href or '/detay' in href:
+                        title = text
+                        link = href
+                        break
+
+        if not title or not link:
+            continue
+
+        # --- Extract date (only the matched portion) ---
+        matched_date_str = None
+
+        # Prefer more specific date containers first (before generic card__footer)
+        date_selectors = [
+            'div.card__footer-left',   # YDY: only the left half with the date
+            'div.date',                # Yurtburs
+            'span.date',
+            'div.news-date',
+            'time',
+            'div.card__footer',        # YDY fallback (may include button)
+            'div.meta',
+        ]
+
+        for dsel in date_selectors:
+            date_elem = item.select_one(dsel)
+            if date_elem:
+                text = date_elem.get_text(" ", strip=True)
+                for pattern in DATE_PATTERNS:
+                    match = pattern.search(text)
+                    if match:
+                        matched_date_str = match.group(0)
+                        break
+                if matched_date_str:
+                    break
+
+        # Fallback: search entire item text
+        if not matched_date_str:
+            full_text = item.get_text(" ", strip=True)
+            for pattern in DATE_PATTERNS:
+                match = pattern.search(full_text)
+                if match:
+                    matched_date_str = match.group(0)
+                    break
+
+        if not matched_date_str:
+            continue
+
+        sortable_date = parse_date(matched_date_str)
+        if not sortable_date:
+            continue
+
+        if sortable_date < MIN_DATE_STR:
+            continue
+
+        # Use ONLY the matched date string as display - no "Devamı", no icons
+        display_date = matched_date_str.strip()
+
+        full_link = urljoin(base_domain, link)
+
+        news_items.append({
+            'department': 'PLACEHOLDER',
+            'date': sortable_date,
+            'display_date': display_date,
+            'title': title,
+            'link': full_link
+        })
+
+    return news_items
+
+def fetch_news(dept):
+    url = dept["url"]
+    dept_name = dept["name"]
+
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
     try:
         response = requests.get(url, headers=headers, timeout=20)
         response.raise_for_status()
@@ -41,43 +179,30 @@ def fetch_news(url):
 
     base_domain = "/".join(url.split("/")[:3])
     soup = BeautifulSoup(response.text, 'html.parser')
-    news_items = []
 
-    for row in soup.select('div.row.type2'):
-        date_div = row.select_one('div.date')
-        if not date_div: continue
-        
-        date_text = date_div.get_text(" ", strip=True)
-        sortable_date = parse_date(date_text)
-        
-        # FILTER: Only include news from August 2026 onwards
-        if sortable_date >= MIN_DATE_STR:
-            link_tag = row.select_one('div.contents h6 a') or row.select_one('h6 a')
-            if link_tag:
-                news_items.append({
-                    'date': sortable_date,
-                    'display_date': date_text.replace(" (?)", ""),
-                    'title': link_tag.text.strip(),
-                    'link': urljoin(base_domain, link_tag.get('href'))
-                })
+    news_items = extract_news_items(soup, base_domain)
+
+    for item in news_items:
+        item['department'] = dept_name
+
     return news_items
 
 def main():
     all_news = []
     print("Starting scrape...")
-    for dept_url in DEPARTMENTS:
-        print(f"Fetching: {dept_url}")
-        all_news.extend(fetch_news(dept_url))
+    for dept in DEPARTMENTS:
+        print(f"Fetching: {dept['name']}")
+        news = fetch_news(dept)
+        print(f"  Found {len(news)} items")
+        all_news.extend(news)
         time.sleep(1)
 
-    # Sort newest first
     all_news.sort(key=lambda x: x['date'], reverse=True)
-    
-    # Save to news.json
+
     with open("news.json", "w", encoding="utf-8") as f:
         json.dump(all_news, f, ensure_ascii=False, indent=2)
-    
-    print(f"Done! Saved {len(all_news)} items to news.json")
+
+    print(f"\nDone! Saved {len(all_news)} items to news.json")
 
 if __name__ == "__main__":
     main()

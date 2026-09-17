@@ -4,19 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İTÜ Güncel Duyurular</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
-        :root { --primary: #002868; --bg: #f4f7f6; --card: #ffffff; --text: #333; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        :root { --primary: #002868; --text: #333; --light-gray: #e0e0e0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #fff; 
+            color: var(--text); 
+            margin: 0; 
+            padding: 20px; 
+            line-height: 1.5;
+        }
         .container { max-width: 800px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { color: var(--primary); margin-bottom: 5px; }
-        header p { color: #666; font-size: 0.9em; }
-        .card { background: var(--card); border-radius: 8px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .date { font-size: 0.85em; color: #888; font-weight: bold; margin-bottom: 8px; display: block; }
-        .title { font-size: 1.1em; font-weight: 600; color: var(--primary); text-decoration: none; display: block; line-height: 1.4; }
-        .title:hover { text-decoration: underline; }
-        .loading { text-align: center; color: #888; font-style: italic; }
+        header { margin-bottom: 30px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        header h1 { color: var(--primary); margin: 0; font-size: 1.8em; }
+        header p { color: #666; font-size: 0.9em; margin: 5px 0 0 0; }
+        
+        .news-item {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        
+        .news-meta {
+            font-size: 0.85em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .news-date {
+            font-weight: bold;
+            color: #000;
+        }
+        .news-dept {
+            color: #666;
+            margin-left: 10px;
+        }
+        .news-dept::before {
+            content: "•";
+            margin-right: 8px;
+            color: #aaa;
+        }
+        
+        .news-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: block;
+        }
+        .news-title:hover {
+            text-decoration: underline;
+        }
+        
+        .loading { text-align: center; color: #888; font-style: italic; padding: 20px; }
     </style>
 </head>
 <body>
@@ -46,23 +88,25 @@
                 }
 
                 news.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <span class="date">${item.display_date}</span>
-                        <a href="${item.link}" target="_blank" class="title">${item.title}</a>
+                    const div = document.createElement('div');
+                    div.className = 'news-item';
+                    div.innerHTML = `
+                        <div class="news-meta">
+                            <span class="news-date">${item.display_date}</span>
+                            <span class="news-dept">${item.department}</span>
+                        </div>
+                        <a href="${item.link}" target="_blank" class="news-title">${item.title}</a>
                     `;
-                    feed.appendChild(card);
+                    feed.appendChild(div);
                 });
 
-                // Update timestamp
                 const now = new Date();
                 document.getElementById('last-updated').textContent = now.toLocaleString('tr-TR');
                 
             } catch (error) {
                 console.error(error);
                 document.getElementById('news-feed').innerHTML = 
-                    '<p class="loading">Haberler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.</p>';
+                    '<p class="loading">Haberler yüklenirken bir hata oluştu.</p>';
             }
         }
         loadNews();
