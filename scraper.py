@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 import json
 import time
 import re
+from datetime import datetime, timezone
 
 DEPARTMENTS = [
     {"name": "Burslar ve Yurtlar Koordinatörlüğü", "url": "https://yurtburs.itu.edu.tr/haberler"},
@@ -11,7 +12,7 @@ DEPARTMENTS = [
     {"name": "Kart İşlem Merkezi", "url": "https://kim.itu.edu.tr/haberler"},
 ]
 
-MIN_DATE_STR = "2026-08-01"
+MIN_DATE_STR = "2026-08-15"
 
 TR_MONTHS = {
     "Oca": "01", "Şub": "02", "Mar": "03", "Nis": "04",
@@ -199,10 +200,16 @@ def main():
 
     all_news.sort(key=lambda x: x['date'], reverse=True)
 
+    output = {
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "items": all_news
+    }
+
     with open("news.json", "w", encoding="utf-8") as f:
-        json.dump(all_news, f, ensure_ascii=False, indent=2)
+        json.dump(output, f, ensure_ascii=False, indent=2)
 
     print(f"\nDone! Saved {len(all_news)} items to news.json")
+
 
 if __name__ == "__main__":
     main()

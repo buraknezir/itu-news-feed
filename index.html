@@ -80,40 +80,57 @@
     </div>
 
     <script>
-        async function loadNews() {
+            async function loadNews() {
+            const feed = document.getElementById('news-feed');
+            const updated = document.getElementById('last-updated');
+            feed.innerHTML = '<p class="loading">Haberler yükleniyor...</p>';
+
             try {
-                const response = await fetch('news.json?t=' + Date.now());
+                // Bypass browser cache
+                const response = await fetch('news.json?t=' + Date.now(), { cache: 'no-store' });
                 if (!response.ok) throw new Error("Veri bulunamadı");
-                const news = await response.json();
-                
-                const feed = document.getElementById('news-feed');
+                const data = await response.json();
+
+                // Support both old (array) and new (object) formats
+                const news = Array.isArray(data) ? data : data.items;
+                const updatedAt = data.updated_at;
+
                 feed.innerHTML = '';
-                
-                if (news.length === 0) {
+                if (!news || news.length === 0) {
                     feed.innerHTML = '<p class="loading">Ağustos 2026 sonrası haber bulunamadı.</p>';
-                    return;
+                } else {
+                    news.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'news-item';
+                        div.innerHTML = `
+                            <div class="news-meta">
+                                <span class="news-date">${item.display_date}</span>
+                                <span class="news-dept">${item.department}</span>
+                            </div>
+                            <a href="${item.link}" target="_blank" rel="noopener" class="news-title">${item.title}</a>
+                        `;
+                        feed.appendChild(div);
+                    });
                 }
 
-                news.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'news-item';
-                    div.innerHTML = `
-                        <div class="news-meta">
-                            <span class="news-date">${item.display_date}</span>
-                            <span class="news-dept">${item.department}</span>
-                        </div>
-                        <a href="${item.link}" target="_blank" class="news-title">${item.title}</a>
-                    `;
-                    feed.appendChild(div);
-                });
-
-                const now = new Date();
-                document.getElementById('last-updated').textContent = now.toLocaleString('tr-TR');
-                
+                // Show the time news.json was last updated by the scraper
+                if (updatedAt) {
+                    const dt = new Date(updatedAt);
+                    updated.textContent = dt.toLocaleString('tr-TR', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                } else {
+                    // Fallback for old format: show when the page loaded
+                    updated.textContent = new Date().toLocaleString('tr-TR', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                }
             } catch (error) {
                 console.error(error);
-                document.getElementById('news-feed').innerHTML = 
-                    '<p class="loading">Haberler yüklenirken bir hata oluştu.</p>';
+                feed.innerHTML = '<p class="loading">Haberler yüklenirken bir hata oluştu.</p>';
+                updated.textContent = '—';
             }
         }
         loadNews();
