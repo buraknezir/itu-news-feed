@@ -82,7 +82,7 @@
     <script>
         async function loadNews() {
             try {
-                const response = await fetch('news.json');
+                const response = await fetch('news.json?t=' + Date.now());
                 if (!response.ok) throw new Error("Veri bulunamadı");
                 const news = await response.json();
                 
