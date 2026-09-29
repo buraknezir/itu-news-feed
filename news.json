@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-29T16:08:40.915618+00:00",
+  "updated_at": "2026-09-29T20:49:44.328908+00:00",
   "items": [
     {
       "department": "Burslar ve Yurtlar Koordinatörlüğü",
@@ -14,6 +14,13 @@
       "display_date": "29 Eyl 2026",
       "title": "2026-2027 Eğitim Öğretim Yılı Geliştirme Vakfı Burs Duyurusu",
       "link": "https://yurtburs.itu.edu.tr/haberler/2026/09/29/2026-2027-e%C4%9Fitim-%C3%B6%C4%9Fretim-y%C4%B1l%C4%B1-geli%C5%9Ftirme-vakf%C4%B1-burs-duyurusu"
+    },
+    {
+      "department": "Yabancı Diller Yüksekokulu",
+      "date": "2026-09-29",
+      "display_date": "29 Eyl 2026",
+      "title": "7592 Af Kanunu Kapsamında Kayıt Olan Adaylar İçin İngilizce Yeterlik Sınavı",
+      "link": "https://ydy.itu.edu.tr/haber-detay/2026/09/29/7592-af"
     },
     {
       "department": "Yabancı Diller Yüksekokulu",
@@ -266,13 +273,6 @@
       "display_date": "18 Ağu 2026",
       "title": "Yeni Kayıt Yaptıran Öğrenciler için İngilizce Yeterlik Konusunda İzlenecek Adımlar",
       "link": "https://ydy.itu.edu.tr/haber-detay/2026/08/18/yeni-kayit"
-    },
-    {
-      "department": "Yabancı Diller Yüksekokulu",
-      "date": "2026-08-18",
-      "display_date": "18 Ağu 2026",
-      "title": "2026 YKS Sonuçlarına Göre Üniversitemiz Programlarına Yerleşen Öğrenciler İçin Gerekli Bilgiler",
-      "link": "https://ydy.itu.edu.tr/haber-detay/2026/08/18/2026-yks"
     }
   ]
 }
