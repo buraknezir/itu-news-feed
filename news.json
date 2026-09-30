@@ -1,6 +1,13 @@
 {
-  "updated_at": "2026-09-30T16:56:53.093079+00:00",
+  "updated_at": "2026-09-30T21:22:31.098939+00:00",
   "items": [
+    {
+      "department": "Yabancı Diller Yüksekokulu",
+      "date": "2026-09-30",
+      "display_date": "30 Eyl 2026",
+      "title": "30 Eylül 2026 İngilizce Yeterlik Sınavı 1. Oturum Sonuçları ve 2 Ekim 2026 2. Oturum Sınav Yerleri",
+      "link": "https://ydy.itu.edu.tr/haber-detay/2026/09/30/sinav"
+    },
     {
       "department": "Burslar ve Yurtlar Koordinatörlüğü",
       "date": "2026-09-29",
@@ -266,13 +273,6 @@
       "display_date": "20 Ağu 2026",
       "title": "Eylül 2026 İngilizce Yeterlik Sınavı Başvuruları Hakkında",
       "link": "https://ydy.itu.edu.tr/haber-detay/2026/08/20/eylul-2026"
-    },
-    {
-      "department": "Yabancı Diller Yüksekokulu",
-      "date": "2026-08-18",
-      "display_date": "18 Ağu 2026",
-      "title": "Yeni Kayıt Yaptıran Öğrenciler için İngilizce Yeterlik Konusunda İzlenecek Adımlar",
-      "link": "https://ydy.itu.edu.tr/haber-detay/2026/08/18/yeni-kayit"
     }
   ]
 }
