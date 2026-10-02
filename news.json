@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T15:42:18.788228+00:00",
+  "updated_at": "2026-10-02T20:10:17.042395+00:00",
   "items": [
     {
       "department": "Burslar ve Yurtlar Koordinatörlüğü",
@@ -7,6 +7,13 @@
       "display_date": "02 Eki 2026",
       "title": "2026-2027 Öğretim Yılı İstanbul Ticaret Odası Burs Duyurusu",
       "link": "https://yurtburs.itu.edu.tr/haberler/2026/10/02/2026-2027-%C3%B6%C4%9Fretim-y%C4%B1l%C4%B1-i-stanbul-ticaret-odas%C4%B1-burs-duyurusu"
+    },
+    {
+      "department": "Yabancı Diller Yüksekokulu",
+      "date": "2026-10-02",
+      "display_date": "02 Eki 2026",
+      "title": "30 Eylül - 2 Ekim 2026 İngilizce Yeterlik Sınavı Sonuçları",
+      "link": "https://ydy.itu.edu.tr/haber-detay/2026/10/02/af"
     },
     {
       "department": "Burslar ve Yurtlar Koordinatörlüğü",
@@ -273,13 +280,6 @@
       "display_date": "25 Ağu 2026",
       "title": "2026 YKS ile Üniversitemizi Yeni Kazanan Öğrencilerimizin Dikkatine",
       "link": "https://yurtburs.itu.edu.tr/haberler/2026/08/25/2026-yks-ile-universitemizi-yeni-kazanan-ogrencilerimizin-dikkatine"
-    },
-    {
-      "department": "Yabancı Diller Yüksekokulu",
-      "date": "2026-08-20",
-      "display_date": "20 Ağu 2026",
-      "title": "Eylül 2026 İngilizce Yeterlik Sınavı Başvuruları Hakkında",
-      "link": "https://ydy.itu.edu.tr/haber-detay/2026/08/20/eylul-2026"
     }
   ]
 }
