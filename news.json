@@ -1,6 +1,13 @@
 {
-  "updated_at": "2026-10-20T10:19:34.421682+00:00",
+  "updated_at": "2026-10-20T15:18:04.380298+00:00",
   "items": [
+    {
+      "department": "Burslar ve Yurtlar Koordinatörlüğü",
+      "date": "2026-10-20",
+      "display_date": "20 Eki 2026",
+      "title": "2026-2027 Öğretim Yılı Kültür Medeniyet Vakfı Burs Duyurusu",
+      "link": "https://yurtburs.itu.edu.tr/haberler/2026/10/20/2026-2027-%C3%B6%C4%9Fretim-y%C4%B1l%C4%B1-k%C3%BClt%C3%BCr-medeniyet-vakf%C4%B1-burs-duyurusu"
+    },
     {
       "department": "Yabancı Diller Yüksekokulu",
       "date": "2026-10-16",
@@ -287,13 +294,6 @@
       "display_date": "05 Eyl 2026",
       "title": "2026 YKS ile Üniversitemize Yerleşen Öğrencilerin İTÜ Kimlik Kartları Hk.",
       "link": "https://kim.itu.edu.tr/haberler/2026/09/05/2026-yks-ile-universitemize-yerlesen-ogrencilerin-itu-kimlik-kartlari-hk"
-    },
-    {
-      "department": "Burslar ve Yurtlar Koordinatörlüğü",
-      "date": "2026-08-27",
-      "display_date": "27 Ağu 2026",
-      "title": "2026-2027 AKADEMİK YILI ULUSLARARASI ÖĞRENCİLER İÇİN YURT BAŞVURULARI (2026–2027 ACADEMIC YEAR DORMITORY APPLICATIONS FOR INTERNATIONAL STUDENTS)",
-      "link": "https://yurtburs.itu.edu.tr/haberler/2026/08/27/2026-2027-akademi-k-yili-uluslararasi-%C3%B6%C4%9Frenci-ler-i-%C3%A7i-n-yurt-ba%C5%9Fvurulari-(2026-2027-academic-year-dormitory-applications-for-international-students)"
     }
   ]
 }
